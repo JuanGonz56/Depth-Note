@@ -2,5 +2,5 @@
     "manifest_version": 3,
     "name": "Depth Annotations",
     "version": "1.0" ,
-    "description": "Create depth-aware sticky notes on webpages"
+    "description": "Create depth-aware sticky notes on any webpage"
 }

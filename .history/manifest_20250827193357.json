@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Depth Annotation Tool",
+  "version": "1.0",
+  "description": "Add depth-aware, immersive annotations to any webpage",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Depth Annotations"
+  },
+  
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
