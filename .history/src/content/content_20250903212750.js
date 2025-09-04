@@ -1,9 +1,13 @@
-// Content script with DELETE button and custom color theme
+// Step 5: Content script with persistence
 console.log("Content script loaded on page:", window.location.href);
 
 let annotationMode = false;
 let toolbar = null;
 let annotationCounter = 0;
+let annotations = []; // Array to store all annotations
+
+// Load existing annotations when page loads
+loadAnnotationsFromStorage();
 
 // Listen for messages from the popup
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -54,7 +58,7 @@ function createFloatingToolbar() {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: linear-gradient(135deg, #5682B1 0%, #739EC9 100%);
+      background: #667eea;
       color: white;
       padding: 10px 15px;
       border-radius: 8px;
@@ -92,166 +96,123 @@ function handlePageClick(e) {
   createAnnotationMarker(e.pageX, e.pageY);
 }
 
-function createAnnotationMarker(x, y) {
+function createAnnotationMarker(x, y, existingText = '', isExisting = false) {
   annotationCounter++;
   const annotationId = `annotation-${annotationCounter}`;
   
   const marker = document.createElement('div');
   marker.id = annotationId;
   marker.innerHTML = `
-    <!-- Annotation Dot with theme colors -->
     <div class="annotation-dot" style="
       position: absolute;
       left: ${x}px;
       top: ${y}px;
-      width: 30px;
-      height: 30px;
-      background: #5682B1;
+      width: 24px;
+      height: 24px;
+      background: ${existingText ? '#2ed573' : '#ff4757'};
       border-radius: 50%;
-      border: 4px solid white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       cursor: pointer;
       z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
-      animation: pulse 1.5s ease-out;
-    ">📝</div>
+      font-size: 12px;
+      ${isExisting ? '' : 'animation: pulse 1s ease-out;'}
+    ">${existingText ? '💬' : '📝'}</div>
     
-    <!-- Text Popup with theme colors -->
     <div class="annotation-popup" style="
       position: absolute;
-      left: ${x + 40}px;
-      top: ${y - 20}px;
-      width: 320px;
-      background: #45a7b4d7;
-      border: 3px solid #5682B1;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(86, 130, 177, 0.3);
+      left: ${x + 30}px;
+      top: ${y}px;
+      width: 200px;
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       z-index: 10001;
-      display: block;
+      display: ${isExisting ? 'none' : 'block'};
       font-family: Arial, sans-serif;
     ">
-      <div style="
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        border: 2px solid #739EC9;
-      ">
-        <h3 style="margin: 0 0 10px 0; color: #000000; font-weight: bold;">Add Your Note:</h3>
-        <textarea placeholder="Type your note here..." style="
-          width: 100%;
-          height: 80px;
-          border: 2px solid #739EC9;
-          border-radius: 6px;
-          padding: 12px;
-          font-size: 16px;
-          resize: none;
-          outline: none;
-          box-sizing: border-box;
-          background: #3275bdb5;
-          color: #000000;
-        "></textarea>
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; gap: 8px;">
+      <textarea placeholder="Add your note..." style="
+        width: 100%;
+        height: 60px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 14px;
+        resize: none;
+        outline: none;
+      ">${existingText}</textarea>
+      <div style="margin-top: 8px; text-align: right;">
         <button class="save-btn" style="
-          background: #5682B1;
+          background: #2ed573;
           color: white;
           border: none;
-          padding: 12px 16px;
-          border-radius: 8px;
+          padding: 6px 12px;
+          border-radius: 4px;
           cursor: pointer;
-          font-size: 14px;
-          font-weight: bold;
-          flex: 1;
-          transition: all 0.2s ease;
-        ">💾 SAVE</button>
-        
+          margin-right: 5px;
+          font-size: 12px;
+        ">Save</button>
         <button class="cancel-btn" style="
-          background: #739EC9;
+          background: #ff4757;
           color: white;
           border: none;
-          padding: 12px 16px;
-          border-radius: 8px;
+          padding: 6px 12px;
+          border-radius: 4px;
           cursor: pointer;
-          font-size: 14px;
-          font-weight: bold;
-          flex: 1;
-          transition: all 0.2s ease;
-        ">❌ CANCEL</button>
-        
+          font-size: 12px;
+        ">Cancel</button>
         <button class="delete-btn" style="
-          background: #000000;
+          background: #ff6b6b;
           color: white;
           border: none;
-          padding: 12px 16px;
-          border-radius: 8px;
+          padding: 6px 12px;
+          border-radius: 4px;
           cursor: pointer;
-          font-size: 14px;
-          font-weight: bold;
-          flex: 1;
-          transition: all 0.2s ease;
-        ">🗑️ DELETE</button>
+          margin-left: 5px;
+          font-size: 12px;
+        ">Delete</button>
       </div>
     </div>
   `;
   
-  // Add pulse animation and hover effects
+  // Add pulse animation
   if (!document.getElementById('annotation-styles')) {
     const style = document.createElement('style');
     style.id = 'annotation-styles';
     style.textContent = `
       @keyframes pulse {
         0% { transform: scale(0); }
-        50% { transform: scale(1.3); }
+        50% { transform: scale(1.2); }
         100% { transform: scale(1); }
-      }
-      
-      .save-btn:hover {
-        background: #456a94 !important;
-        transform: translateY(-1px);
-      }
-      
-      .cancel-btn:hover {
-        background: #5e85ab !important;
-        transform: translateY(-1px);
-      }
-      
-      .delete-btn:hover {
-        background: #333333 !important;
-        transform: translateY(-1px);
       }
     `;
     document.head.appendChild(style);
   }
   
   document.body.appendChild(marker);
-  setupAnnotationEvents(marker);
+  setupAnnotationEvents(marker, annotationId);
   
-  // Auto-focus the textarea
-  const textarea = marker.querySelector('textarea');
-  textarea.focus();
+  // Auto-focus for new annotations
+  if (!isExisting) {
+    const textarea = marker.querySelector('textarea');
+    textarea.focus();
+  }
   
-  console.log("Annotation marker created!");
+  console.log("Annotation marker created:", annotationId);
 }
 
-function setupAnnotationEvents(marker) {
+function setupAnnotationEvents(marker, annotationId) {
   const dot = marker.querySelector('.annotation-dot');
   const popup = marker.querySelector('.annotation-popup');
   const textarea = marker.querySelector('textarea');
   const saveBtn = marker.querySelector('.save-btn');
   const cancelBtn = marker.querySelector('.cancel-btn');
   const deleteBtn = marker.querySelector('.delete-btn');
-  
-  // Safety check
-  if (!dot || !popup || !textarea || !saveBtn || !cancelBtn || !deleteBtn) {
-    console.error('Missing annotation elements');
-    return;
-  }
   
   // Click dot to show/hide popup
   dot.addEventListener('click', function(e) {
@@ -263,34 +224,100 @@ function setupAnnotationEvents(marker) {
     }
   });
   
-  // Save button - changes dot to show it has content
+  // Save button
   saveBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     const text = textarea.value.trim();
     if (text) {
-      dot.style.background = '#739EC9';
+      // Update visual appearance
+      dot.style.background = '#2ed573';
       dot.innerHTML = '💬';
+      
+      // Save to storage
+      saveAnnotation(annotationId, {
+        id: annotationId,
+        x: parseInt(dot.style.left),
+        y: parseInt(dot.style.top),
+        text: text,
+        timestamp: Date.now()
+      });
+      
       console.log("Annotation saved:", text);
     }
     popup.style.display = 'none';
   });
   
-  // Cancel button - removes empty annotations, closes popup for filled ones
+  // Cancel button
   cancelBtn.addEventListener('click', function(e) {
     e.stopPropagation();
-    if (!textarea.value.trim()) {
-      marker.remove();
-      console.log("Empty annotation cancelled and removed");
-    } else {
-      popup.style.display = 'none';
-      console.log("Annotation editing cancelled");
-    }
+    popup.style.display = 'none';
   });
   
-  // Delete button - always removes the annotation completely
+  // Delete button
   deleteBtn.addEventListener('click', function(e) {
     e.stopPropagation();
+    deleteAnnotation(annotationId);
     marker.remove();
-    console.log("Annotation deleted permanently");
+    popup.style.display = 'none';
+    console.log("Annotation deleted:", annotationId);
+  });
+  
+  // Click outside to close popup
+  document.addEventListener('click', function(e) {
+    if (!marker.contains(e.target)) {
+      popup.style.display = 'none';
+    }
+  });
+}
+
+// Storage functions
+function saveAnnotation(annotationId, annotationData) {
+  // Find existing annotation or add new one
+  const existingIndex = annotations.findIndex(a => a.id === annotationId);
+  if (existingIndex >= 0) {
+    annotations[existingIndex] = annotationData;
+  } else {
+    annotations.push(annotationData);
+  }
+  
+  // Save to Chrome storage
+  const storageKey = `annotations_${window.location.href}`;
+  chrome.storage.local.set({
+    [storageKey]: annotations
+  }, function() {
+    console.log("Annotations saved to storage");
+  });
+}
+
+function deleteAnnotation(annotationId) {
+  annotations = annotations.filter(a => a.id !== annotationId);
+  
+  const storageKey = `annotations_${window.location.href}`;
+  chrome.storage.local.set({
+    [storageKey]: annotations
+  }, function() {
+    console.log("Annotation deleted from storage");
+  });
+}
+
+function loadAnnotationsFromStorage() {
+  const storageKey = `annotations_${window.location.href}`;
+  chrome.storage.local.get([storageKey], function(result) {
+    if (result[storageKey] && result[storageKey].length > 0) {
+      annotations = result[storageKey];
+      console.log(`Loading ${annotations.length} existing annotations`);
+      
+      // Recreate all saved annotations
+      annotations.forEach(annotation => {
+        createAnnotationMarker(annotation.x, annotation.y, annotation.text, true);
+      });
+      
+      // Update counter to avoid ID conflicts
+      annotationCounter = Math.max(...annotations.map(a => 
+        parseInt(a.id.split('-')[1]) || 0
+      ));
+    } else {
+      console.log("No existing annotations found");
+    }
   });
 }

@@ -1,0 +1,352 @@
+/* Depth Annotation Tool - Styles */
+
+/* Main container for annotations */
+#depth-annotation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  transform-style: preserve-3d;
+}
+
+/* Floating toolbar */
+.depth-toolbar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.depth-toolbar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+}
+
+/* Toolbar buttons */
+.toolbar-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.toolbar-btn.active {
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  font-weight: bold;
+}
+
+.toolbar-btn.danger:hover {
+  background: #ff4757;
+  border-color: #ff4757;
+}
+
+/* Depth selector */
+.depth-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.depth-slider {
+  width: 80px;
+  accent-color: #ff6b9d;
+}
+
+#depth-value {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Annotation mode cursor */
+.annotation-mode {
+  cursor: crosshair !important;
+}
+
+.annotation-mode * {
+  cursor: crosshair !important;
+}
+
+/* Individual annotations */
+.depth-annotation {
+  position: absolute;
+  pointer-events: auto;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+}
+
+/* Annotation marker (the clickable dot) */
+.annotation-marker {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+}
+
+.annotation-marker:hover {
+  transform: scale(1.2) translateZ(10px);
+}
+
+.marker-dot {
+  width: 100%;
+  height: 100%;
+  background: var(--depth-color, #ff4757);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.8),
+    0 0 20px var(--depth-color, #ff4757),
+    0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+/* Pulsing animation for markers */
+.marker-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--depth-color, #ff4757);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
+
+/* Annotation popup */
+.annotation-popup {
+  position: absolute;
+  top: 30px;
+  left: -100px;
+  width: 250px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transform-origin: center top;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px) scale(0.9) translateZ(20px);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backdrop-filter: blur(10px);
+  z-index: 10001;
+}
+
+.annotation-popup.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1) translateZ(20px);
+}
+
+/* Speech bubble arrow */
+.annotation-popup::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+}
+
+/* Annotation textarea */
+.annotation-text {
+  width: 100%;
+  min-height: 60px;
+  border: 2px solid #f1f2f6;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.annotation-text:focus {
+  border-color: var(--depth-color, #ff4757);
+}
+
+.annotation-text::placeholder {
+  color: #a4b0be;
+}
+
+/* Annotation actions */
+.annotation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.annotation-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.save-btn {
+  background: var(--depth-color, #ff4757);
+  color: white;
+}
+
+.save-btn:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: #f1f2f6;
+  color: #57606f;
+}
+
+.delete-btn:hover {
+  background: #ff4757;
+  color: white;
+}
+
+/* 3D View mode */
+.depth-3d-view {
+  transform-style: preserve-3d;
+}
+
+.depth-3d-view #depth-annotation-container {
+  transform-style: preserve-3d;
+}
+
+.depth-3d-view .depth-annotation {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+/* Depth-specific enhancements */
+.depth-annotation[data-depth="0"] .marker-dot {
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.9),
+    0 0 25px #ff4757,
+    0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.depth-annotation[data-depth="1"] .marker-dot {
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.8),
+    0 0 20px #ffa502,
+    0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.depth-annotation[data-depth="2"] .marker-dot {
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.7),
+    0 0 18px #2ed573,
+    0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.depth-annotation[data-depth="3"] .marker-dot {
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.6),
+    0 0 15px #5352ed,
+    0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.depth-annotation[data-depth="4"] .marker-dot {
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.5),
+    0 0 12px #ff6b9d,
+    0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .depth-toolbar {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 10px;
+  }
+  
+  .toolbar-content {
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+  }
+  
+  .annotation-popup {
+    width: 200px;
+    left: -75px;
+  }
+}
+
+/* Smooth animations */
+* {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Hide scrollbars when in annotation mode for cleaner look */
+.annotation-mode::-webkit-scrollbar {
+  display: none;
+}
+
+.annotation-mode {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

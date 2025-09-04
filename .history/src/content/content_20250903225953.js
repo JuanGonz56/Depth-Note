@@ -152,7 +152,7 @@ function createAnnotationMarker(x, y) {
           resize: none;
           outline: none;
           box-sizing: border-box;
-          background: #3275bdb5;
+          background: #FFE8DB;
           color: #000000;
         "></textarea>
       </div>

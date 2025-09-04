@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Depth Annotations",
     "version": "1.0" ,
-    "description": "Create depth-aware sticky notes on webpages to make more engaging",
+    "description": "Create depth-aware sticky notes on webpages",
     "action": {
     "default_popup": "src/popup/popup.html"
   },

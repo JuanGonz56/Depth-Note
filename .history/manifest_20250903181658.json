@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Depth Annotations",
+  "version": "1.0",
+  "description": "Create depth-aware sticky notes on webpages",
+  
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Depth Annotations"
+  },
+  
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"],
+      "run_at": "document_end",
+      "exclude_matches": [
+        "chrome://*/*",
+        "chrome-extension://*/*",
+        "moz-extension://*/*"
+      ]
+    }
+  ],
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "alarms"
+  ],
+  
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content/content.css", "src/content/content.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png", 
+    "128": "icons/icon128.png"
+  }
+}

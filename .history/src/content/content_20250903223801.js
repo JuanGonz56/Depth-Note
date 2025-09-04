@@ -1,4 +1,4 @@
-// Content script with DELETE button and custom color theme
+// Optimized content script with DELETE button properly added
 console.log("Content script loaded on page:", window.location.href);
 
 let annotationMode = false;
@@ -54,7 +54,7 @@ function createFloatingToolbar() {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: linear-gradient(135deg, #5682B1 0%, #739EC9 100%);
+      background: #667eea;
       color: white;
       padding: 10px 15px;
       border-radius: 8px;
@@ -99,14 +99,14 @@ function createAnnotationMarker(x, y) {
   const marker = document.createElement('div');
   marker.id = annotationId;
   marker.innerHTML = `
-    <!-- Annotation Dot with theme colors -->
+    <!-- Big Red Dot -->
     <div class="annotation-dot" style="
       position: absolute;
       left: ${x}px;
       top: ${y}px;
       width: 30px;
       height: 30px;
-      background: #5682B1;
+      background: #ff4757;
       border-radius: 50%;
       border: 4px solid white;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -119,88 +119,81 @@ function createAnnotationMarker(x, y) {
       animation: pulse 1.5s ease-out;
     ">📝</div>
     
-    <!-- Text Popup with theme colors -->
+    <!-- BIGGER, BRIGHTER Text Popup -->
     <div class="annotation-popup" style="
       position: absolute;
       left: ${x + 40}px;
       top: ${y - 20}px;
-      width: 320px;
-      background: #45a7b4d7;
-      border: 3px solid #5682B1;
+      width: 300px;
+      background: #739EC9;
+      border: 4px solid #FF4757;
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 8px 24px rgba(86, 130, 177, 0.3);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       z-index: 10001;
       display: block;
       font-family: Arial, sans-serif;
     ">
       <div style="
         background: white;
-        padding: 15px;
+        padding: 10px;
         border-radius: 8px;
         margin-bottom: 15px;
-        border: 2px solid #739EC9;
       ">
-        <h3 style="margin: 0 0 10px 0; color: #000000; font-weight: bold;">Add Your Note:</h3>
+        <h3 style="margin: 0 0 10px 0; color: #333;">Add Your Note:</h3>
         <textarea placeholder="Type your note here..." style="
           width: 100%;
           height: 80px;
-          border: 2px solid #739EC9;
+          border: 2px solid #667eea;
           border-radius: 6px;
           padding: 12px;
           font-size: 16px;
           resize: none;
           outline: none;
           box-sizing: border-box;
-          background: #3275bdb5;
-          color: #000000;
         "></textarea>
       </div>
       
-      <div style="display: flex; justify-content: space-between; gap: 8px;">
+      <div style="text-align: center;">
         <button class="save-btn" style="
-          background: #5682B1;
+          background: #2ed573;
           color: white;
           border: none;
-          padding: 12px 16px;
+          padding: 12px 18px;
           border-radius: 8px;
           cursor: pointer;
+          margin-right: 8px;
           font-size: 14px;
           font-weight: bold;
-          flex: 1;
-          transition: all 0.2s ease;
         ">💾 SAVE</button>
         
         <button class="cancel-btn" style="
-          background: #739EC9;
+          background: #ff4757;
           color: white;
           border: none;
-          padding: 12px 16px;
+          padding: 12px 18px;
           border-radius: 8px;
           cursor: pointer;
+          margin-right: 8px;
           font-size: 14px;
           font-weight: bold;
-          flex: 1;
-          transition: all 0.2s ease;
         ">❌ CANCEL</button>
         
         <button class="delete-btn" style="
-          background: #000000;
+          background: #ff6b6b;
           color: white;
           border: none;
-          padding: 12px 16px;
+          padding: 12px 18px;
           border-radius: 8px;
           cursor: pointer;
           font-size: 14px;
           font-weight: bold;
-          flex: 1;
-          transition: all 0.2s ease;
         ">🗑️ DELETE</button>
       </div>
     </div>
   `;
   
-  // Add pulse animation and hover effects
+  // Add pulse animation styles (only once)
   if (!document.getElementById('annotation-styles')) {
     const style = document.createElement('style');
     style.id = 'annotation-styles';
@@ -209,21 +202,6 @@ function createAnnotationMarker(x, y) {
         0% { transform: scale(0); }
         50% { transform: scale(1.3); }
         100% { transform: scale(1); }
-      }
-      
-      .save-btn:hover {
-        background: #456a94 !important;
-        transform: translateY(-1px);
-      }
-      
-      .cancel-btn:hover {
-        background: #5e85ab !important;
-        transform: translateY(-1px);
-      }
-      
-      .delete-btn:hover {
-        background: #333333 !important;
-        transform: translateY(-1px);
       }
     `;
     document.head.appendChild(style);
@@ -247,12 +225,6 @@ function setupAnnotationEvents(marker) {
   const cancelBtn = marker.querySelector('.cancel-btn');
   const deleteBtn = marker.querySelector('.delete-btn');
   
-  // Safety check
-  if (!dot || !popup || !textarea || !saveBtn || !cancelBtn || !deleteBtn) {
-    console.error('Missing annotation elements');
-    return;
-  }
-  
   // Click dot to show/hide popup
   dot.addEventListener('click', function(e) {
     e.stopPropagation();
@@ -263,19 +235,19 @@ function setupAnnotationEvents(marker) {
     }
   });
   
-  // Save button - changes dot to show it has content
+  // Save button - turns dot green with speech bubble
   saveBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     const text = textarea.value.trim();
     if (text) {
-      dot.style.background = '#739EC9';
+      dot.style.background = '#2ed573';
       dot.innerHTML = '💬';
       console.log("Annotation saved:", text);
     }
     popup.style.display = 'none';
   });
   
-  // Cancel button - removes empty annotations, closes popup for filled ones
+  // Cancel button - removes annotation if no text, otherwise just closes
   cancelBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     if (!textarea.value.trim()) {

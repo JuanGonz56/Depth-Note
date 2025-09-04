@@ -1,4 +1,4 @@
-// Fixed popup script with better error handling
+// Simple popup script that works with your existing HTML
 document.addEventListener('DOMContentLoaded', function() {
   console.log("Popup loaded!");
   
@@ -8,15 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Send message to content script
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      console.log("Sending message to tab:", tabs[0].id);
-      
       chrome.tabs.sendMessage(tabs[0].id, {action: 'start'}, function(response) {
-        // Check for Chrome runtime errors
         if (chrome.runtime.lastError) {
-          console.log("Chrome error:", chrome.runtime.lastError.message);
-          console.log("Content script not ready yet - but it might still work!");
+          console.log("Content script not ready yet");
         } else {
-          console.log("Message sent successfully, response:", response);
+          console.log("Message sent successfully");
         }
       });
     });
@@ -45,4 +41,5 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('default-depth').addEventListener('change', function(e) {
     console.log("Default depth:", e.target.value);
   });
+  
 });

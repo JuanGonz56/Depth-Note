@@ -125,7 +125,7 @@ function createAnnotationMarker(x, y) {
       left: ${x + 40}px;
       top: ${y - 20}px;
       width: 320px;
-      background: #45a7b4d7;
+      background: #45a7b4ff;
       border: 3px solid #5682B1;
       border-radius: 12px;
       padding: 20px;
@@ -152,7 +152,7 @@ function createAnnotationMarker(x, y) {
           resize: none;
           outline: none;
           box-sizing: border-box;
-          background: #3275bdb5;
+          background: #FFE8DB;
           color: #000000;
         "></textarea>
       </div>
