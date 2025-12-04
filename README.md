@@ -1,4 +1,4 @@
-# Depth Annotations - Browser Extension
+# Depth Note - Browser Extension
 
 A Chrome extension that enables multi-layered, depth-aware annotations on web pages, demonstrating innovative approaches to spatial UI design and immersive web interactions.
 
