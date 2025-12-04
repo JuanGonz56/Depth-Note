@@ -20,38 +20,6 @@ Depth Annotations transforms traditional 2D web annotation into a multi-dimensio
 - **Responsive visual feedback**: Color-coded depth layers with smooth animations
 - **Cross-platform compatibility**: Works across all Chromium-based browsers
 
-## Technical Implementation
-
-### Core Architecture
-```javascript
-// Depth layer management with spatial positioning
-function applyDepthStyling(annotation, depth) {
-  const intensity = (depth + 1) / this.maxDepthLayers;
-  const blur = depth * 0.5;
-  const scale = 1 + (depth * 0.1);
-  
-  annotation.style.transform = `scale(${scale})`;
-  annotation.style.filter = `blur(${blur}px)`;
-  annotation.style.zIndex = 1000 + depth;
-}
-```
-
-### 3D Interaction System
-```javascript
-// Mouse-driven parallax for depth visualization
-function handleMouseMove(e) {
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
-  const mouseX = (e.clientX - centerX) / centerX;
-  const mouseY = (e.clientY - centerY) / centerY;
-  
-  // Apply depth-based parallax transformation
-  const parallaxX = mouseX * (depth + 1) * 5;
-  const parallaxY = mouseY * (depth + 1) * 5;
-  annotation.style.transform = `translate(${parallaxX}px, ${parallaxY}px)`;
-}
-```
-
 ## Technologies Used
 
 - **JavaScript ES6+**: Modern async/await patterns and modular architecture
