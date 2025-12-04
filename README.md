@@ -4,7 +4,7 @@ A Chrome extension that enables multi-layered, depth-aware annotations on web pa
 
 ## Overview
 
-Depth Annotations transforms traditional 2D web annotation into a multi-dimensional experience by introducing depth layers and 3D spatial concepts to browser-based content marking. This project explores how depth perception and layered interfaces can enhance user interaction with digital content - principles directly applicable to next-generation display technologies.
+Depth Annotations transforms traditional 2D web annotation into a multi-dimensional experience by introducing depth layers and 3D spatial concepts to browser-based content marking. This project explores how depth perception and layered interfaces can enhance user interaction with digital content.
 
 ## Key Features
 
@@ -110,5 +110,3 @@ depth-annotations/
 ## Project Impact
 
 This extension demonstrates practical application of spatial UI concepts that are fundamental to next-generation display technology. The systematic approach to depth management, combined with intuitive user interactions, showcases skills directly relevant to developing interfaces for immersive display systems.
-
-The project emphasizes clean code architecture, user-centered design, and innovative approaches to traditional web interaction patterns - all essential qualities for front-end development in emerging display technologies.
