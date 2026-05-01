@@ -5,7 +5,7 @@ let currentDepth = 0;
 let toolbar = null;
 const activeAnnotations = new Map();
 
-const DEPTH_COLORS = ["#db1223", "#fea500", "#37d077", "#1818ee", "#ef5488"];
+const DEPTH_COLORS = ["#ff4757", "#ffa502", "#2ed573", "#5352ed", "#ff6b9d"];
 const DEPTH_NAMES = ["Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5"];
 
 function generateId() {
