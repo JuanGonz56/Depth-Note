@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Depth Annotations",
+  "version": "1.0",
+  "description": "Create depth-aware sticky notes on webpages to make more engaging",
+  "action": {
+    "default_popup": "src/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "alarms",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"]
+    }
+  ]
+}
